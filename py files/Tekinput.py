@@ -57,7 +57,7 @@ root = Tk()
 root.title("Tekinput Generator BETA V1.2")
 root.geometry("900x600")
 centraliseWindow(root)
-root.iconbitmap(makePath(r'\Images\Logo\tkig.ico'))
+root.iconbitmap(makePath(r'\..\Images\Logo\tkig.ico'))
 
 #ttk style
 style = ttk.Style()
@@ -77,7 +77,7 @@ SupportFrame.pack(pady = 30,side = BOTTOM)
 
 ########################VARIABLES###############################
 
-save_path = r"\Images\Output"
+save_path = r"\..\Images\Output"
 
 preview_size = 32
 
@@ -254,7 +254,7 @@ clearBtn.grid(row = 0, column = 1, padx = 100)
 eraseBtn.grid(row = 0, column = 2, padx = 0)
 
 #credits
-photo = ImageTk.PhotoImage(Image.open(makePath(r'\Images\Logo\TKIG.png')).resize((192, 100)))
+photo = ImageTk.PhotoImage(Image.open(makePath(r'\..\Images\Logo\TKIG.png')).resize((192, 100)))
 label = ttk.Label(SupportFrame, image = photo)
 label.grid(row = 1, column = 1)
 

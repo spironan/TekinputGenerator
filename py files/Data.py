@@ -29,7 +29,7 @@ def create_connection(db_file):
 #data
 Inputs = []
 
-conn = create_connection(r"C:\Dev\Python\Projects\Tekinput\database.db")
+conn = create_connection(r"C:\Dev\Python\Projects\Tekinput\TekinputGenerator\database.db")
 cur = conn.cursor()
 cur.execute("SELECT * FROM Tekken7 ")
 

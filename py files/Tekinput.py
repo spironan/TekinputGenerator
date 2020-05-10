@@ -66,8 +66,21 @@ style = ttk.Style()
 DisplayFrame = ttk.LabelFrame(root, text = "Display")
 DisplayFrame.pack(pady = 10)
 
-InputFrame = ttk.LabelFrame(root, text = "Inputs")
-InputFrame.pack()
+InputFrame = ttk.LabelFrame(root, text = "Inputs", padding = 50)
+InputFrame.pack(pady = 10)
+
+# MovementLabel = ttk.Label(InputFrame, text = "Movement")
+# MovementLabel.grid()
+
+# AttackLabel = ttk.Label(InputFrame, text = "Attack")
+# AttackLabel.grid()
+
+# StateLabel = ttk.Label(InputFrame, text = "State")
+# StateLabel.grid()
+
+# SpecialLabel = ttk.Label(InputFrame, text = "Special")
+# SpecialLabel.grid()
+
 
 ButtonsFrame = ttk.Frame(root, padding = 10)
 ButtonsFrame.pack()
@@ -212,11 +225,49 @@ class inputButton():
             pady = 10)
         
 for element in Data.Inputs:
+    #if(element.character == "None") : 
     buttons.append(inputButton(InputFrame, element))
 
 #unique button widget
 
 #combo image preview label
+
+
+# characterList = [
+#     "Choose your character",
+#     "Akuma",
+#     "Alisa",
+#     "Claudio",
+#     "Eliza",
+# ]
+# v = tk.StringVar()
+# v.set(characterList[0])
+# om = tk.OptionMenu(InputFrame, v, *characterList)
+# om.grid(row = 0, column = 20)
+
+#v = tk.StringVar()
+#v.set(characterList[0])
+
+
+#def updateSelect(event):
+#   if(charSelectLabel == ):
+#        charSelectLabel = ttk.Label(InputFrame, text = characterList[0]).grid(row = 0, column = 20)
+
+#def updateSelect(event):
+    #myLabel = Label(InputFrame, text = myCombo.get()).grid(row = 0, column = 20)
+
+myCombo = ttk.Combobox(InputFrame, value = Data.characters)
+myCombo.current(0)
+
+charSelectLabel = ttk.Label(InputFrame, text = "Choose your character").grid(row = 0, column = 20)
+#def updateSelect(event):
+#    charSelectLabel.text = myCombo.get()
+#myCombo.bind("<<ComboBoxSelected>>", updateSelect)
+myCombo.grid(row = 1, column = 20)
+
+
+
+
 style.configure('comboPreviewLabel.TLabel', width = 100, height = 50)
 comboPreview = ttk.Label(DisplayFrame, 
 style = 'comboPreviewLabel.TLabel')
@@ -232,6 +283,7 @@ comboDisplay.pack()
 toggle = ttk.Checkbutton(DisplayFrame,
 text = "Display Final Output", variable = displayFinalOutput)
 toggle.pack()
+
 
 
 #GENERATE, CLEAR, ERASE Buttons

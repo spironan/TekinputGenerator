@@ -9,12 +9,13 @@ import sqlite3
 from sqlite3 import Error
 
 class Input():
-    def __init__(self, name, filepath, display, fileDisplay, buttonLayout):
+    def __init__(self, name, filepath, display, fileDisplay, buttonLayout, character):
         self.name = name
         self.filepath = filepath
         self.display = display
         self.fileDisplay = fileDisplay
         self.buttonLayout = buttonLayout
+        self.character = character
 
 def create_connection(db_file):
     """ create a database connection to a SQLite database """
@@ -31,9 +32,21 @@ Inputs = []
 
 conn = create_connection(r"C:\Dev\Python\Projects\Tekinput\TekinputGenerator\database.db")
 cur = conn.cursor()
-cur.execute("SELECT * FROM Tekken7 ")
+cur.execute("SELECT * FROM Inputs")
 
 rows = cur.fetchall()
 
 for row in rows:
-    Inputs.append( Input(row[0], row[1], row[2], row[3], tuple(eval(row[4])) ))
+    Inputs.append( Input(row[0], row[1], row[2], row[3], tuple(eval(row[4])), row[5] ))
+
+
+
+characters = []
+
+cur.execute("SELECT * FROM Characters")
+
+rows = cur.fetchall()
+
+for row in rows:
+    characters.append(row[0])
+#     characters.append( Input(row[0], row[1], row[2], row[3], tuple(eval(row[4])) ))

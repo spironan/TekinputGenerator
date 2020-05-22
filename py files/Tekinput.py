@@ -55,7 +55,7 @@ def centraliseWindow(window):
 #TK GUI
 root = Tk()
 root.title("Tekinput Generator BETA V1.2")
-root.geometry("900x600")
+root.geometry("1366x768")
 centraliseWindow(root)
 root.iconbitmap(makePath(r'\..\Images\Logo\tkig.ico'))
 
@@ -81,12 +81,11 @@ InputFrame.pack(pady = 10)
 # SpecialLabel = ttk.Label(InputFrame, text = "Special")
 # SpecialLabel.grid()
 
-
 ButtonsFrame = ttk.Frame(root, padding = 10)
 ButtonsFrame.pack()
 
 SupportFrame = ttk.LabelFrame(root, text = "Credits", padding = 20)
-SupportFrame.pack(pady = 30,side = BOTTOM)
+SupportFrame.pack(padx = 5)
 
 ########################VARIABLES###############################
 
@@ -101,6 +100,7 @@ buttons = []
 final_Images = {}
 
 preview_Images = {}
+proper_previews = {}
 
 #Preload all Images Resized.
 for element in Data.Inputs:
@@ -108,8 +108,11 @@ for element in Data.Inputs:
     final_Images[element.name] = f_im
     #Here I make a deepcopy, resize my opened image to preview_size and save into preview images
     p_im = copy.deepcopy(f_im)
-    p_im.thumbnail((preview_size, preview_size))
-    preview_Images[element.name] = p_im
+    y = p_im.size[1]/preview_size
+    x = p_im.size[0] / y
+    preview_Images[element.name] = p_im.resize((32,32))
+    p_im.thumbnail((x,preview_size))
+    proper_previews[element.name] = p_im
 
 comboText = tk.StringVar()
 comboText.set("Combo Output")
@@ -171,14 +174,18 @@ def generatePreview() :
         comboPreview.image = None
         return
 
-    lengthX = preview_size * len(inputBuffer)
-    lengthY = preview_size
+    totalLength = 0
 
-    #creates a new empty image, RGB mode, and size.
-    new_im = Image.new('RGBA', (lengthX, lengthY))
-    
     for i in range(0, len(inputBuffer), 1):
-        new_im.paste(preview_Images[inputBuffer[i].name], (i * preview_size, 0))
+        totalLength += proper_previews[inputBuffer[i].name].size[0]
+
+    #creates a new empty image, RGB mode, and size
+    new_im = Image.new('RGBA', (totalLength, preview_size))
+    
+    currentLength = 0
+    for i in range(0, len(inputBuffer), 1):
+        new_im.paste(proper_previews[inputBuffer[i].name], (currentLength, 0))
+        currentLength += proper_previews[inputBuffer[i].name].size[0]
     
     photo = ImageTk.PhotoImage(new_im)
     comboPreview.configure(image = photo)
@@ -207,6 +214,62 @@ def erase():
     generateText()
     generatePreview()
 
+# def updateSelection():
+#    for element in buttons:
+#         if(element.character == None) : 
+#             continue
+#         elif(myCombo.get() == None) : 
+#             element.btn.grid_remove()
+#         elif(element.character != myCombo.get()) : 
+#             element.btn.grid_remove()
+#         else : 
+#             element.btn.grid()
+
+# def updateSelectionCallback(event):
+#     updateSelection()
+
+def scrollCanvas(event):
+    comboCanvas.configure(scrollregion=comboCanvas.bbox("all"), width=1000, height=40)
+
+
+#Tekinput Graphic Image Label
+photo = ImageTk.PhotoImage(Image.open(makePath(r'\..\Images\Logo\TKIG.png')).resize((160, 90)))
+label = ttk.Label(DisplayFrame, image = photo)
+label.grid(row = 0, column = 0)
+
+
+comboPreviewFrame = Labelframe(DisplayFrame, text = "Combo Preivew Frame", width = 1000, height = 40)
+comboPreviewFrame.grid(row = 0, column = 1)
+comboPreviewFrame.grid_propagate(0)
+
+comboCanvas=Canvas(comboPreviewFrame, width = 1000, height = 40)
+comboFrame=Frame(comboCanvas)
+myscrollbar=Scrollbar(comboPreviewFrame, orient = "horizontal", command=comboCanvas.xview)
+comboCanvas.configure(xscrollcommand = myscrollbar.set)
+myscrollbar.pack(side="bottom",fill="x")
+comboCanvas.pack(side="bottom")
+comboCanvas.create_window((0,0),window=comboFrame,anchor='nw')
+comboFrame.bind("<Configure>",scrollCanvas)
+
+#combo Preview label
+style.configure('comboPreviewLabel.TLabel', width = 100, height = 50)
+comboPreview = ttk.Label(comboFrame, 
+style = 'comboPreviewLabel.TLabel')
+comboPreview.grid(row = 0, column = 1)
+
+
+
+#combo letters display label
+style.configure('comboDisplayLabel.TLabel', width = 100, relief = SUNKEN, borderwidth = 200,)
+comboDisplay = ttk.Label(DisplayFrame, textvariable = comboText,
+style = 'comboDisplayLabel.TLabel')
+comboDisplay.grid(row = 1, column = 1)
+
+#print toggle
+toggle = ttk.Checkbutton(DisplayFrame,
+text = "Display Final Output", variable = displayFinalOutput)
+toggle.grid(row = 2, column = 1)
+
 
 #UI
 style.configure('InputButton.TButton', background = 'black', borderwidth = 10)
@@ -218,111 +281,85 @@ class inputButton():
         self.btn = ttk.Button(root, text = element.name, image = self.photo
         , command = lambda : addInput(element), style = 'InputButton.TButton'
         )
+        
         self.btn.grid(
             row = element.buttonLayout[0],
             column = element.buttonLayout[1],
             padx = 3,
             pady = 10)
+
+        self.character = element.character
         
 for element in Data.Inputs:
-    #if(element.character == "None") : 
     buttons.append(inputButton(InputFrame, element))
 
-#unique button widget
 
-#combo image preview label
+#Character Selection widgets and functions
+# charSelectLabel = ttk.Label(InputFrame, text = "Choose your character").grid(row = 0, column = 20)
 
+# myCombo = ttk.Combobox(InputFrame, value = Data.characters)
+#updateSelection()
+# myCombo.bind("<<ComboboxSelected>>", updateSelectionCallback)
+# myCombo.grid(row = 1, column = 20)
 
-# characterList = [
-#     "Choose your character",
-#     "Akuma",
-#     "Alisa",
-#     "Claudio",
-#     "Eliza",
-# ]
-# v = tk.StringVar()
-# v.set(characterList[0])
-# om = tk.OptionMenu(InputFrame, v, *characterList)
-# om.grid(row = 0, column = 20)
-
-#v = tk.StringVar()
-#v.set(characterList[0])
-
-
-#def updateSelect(event):
-#   if(charSelectLabel == ):
-#        charSelectLabel = ttk.Label(InputFrame, text = characterList[0]).grid(row = 0, column = 20)
-
-#def updateSelect(event):
-    #myLabel = Label(InputFrame, text = myCombo.get()).grid(row = 0, column = 20)
-
-myCombo = ttk.Combobox(InputFrame, value = Data.characters)
-myCombo.current(0)
-
-charSelectLabel = ttk.Label(InputFrame, text = "Choose your character").grid(row = 0, column = 20)
-#def updateSelect(event):
-#    charSelectLabel.text = myCombo.get()
-#myCombo.bind("<<ComboBoxSelected>>", updateSelect)
-myCombo.grid(row = 1, column = 20)
-
-
-
-
-style.configure('comboPreviewLabel.TLabel', width = 100, height = 50)
-comboPreview = ttk.Label(DisplayFrame, 
-style = 'comboPreviewLabel.TLabel')
-comboPreview.pack()
-
-#combo letters display label
-style.configure('comboDisplayLabel.TLabel', width = 100, relief = SUNKEN, borderwidth = 200,)
-comboDisplay = ttk.Label(DisplayFrame, textvariable = comboText,
-style = 'comboDisplayLabel.TLabel')
-comboDisplay.pack()
-
-#print toggle
-toggle = ttk.Checkbutton(DisplayFrame,
-text = "Display Final Output", variable = displayFinalOutput)
-toggle.pack()
-
-
+###TEMP CODE###
+for element in buttons:
+        if(element.character == None) : 
+            continue
+        
+        element.btn.grid_remove()
+###TEMP CODE###
 
 #GENERATE, CLEAR, ERASE Buttons
-style.configure('generateBtn.TButton', 
-font = ("Helvetica", 24, "bold"), background = 'green', foreground = 'green')
-style.configure('clearBtn.TButton', 
-font = ("Helvetica", 24, "bold"), background = 'red', foreground = 'red')
-style.configure('eraseBtn.TButton', 
-font = ("Helvetica", 24, "bold"), background = 'orange', foreground = 'orange')
+# style.configure('generateBtn.TButton', 
+# font = ("Helvetica", 24, "bold"), background = 'green', foreground = 'green')
+# style.configure('clearBtn.TButton', 
+# font = ("Helvetica", 24, "bold"), background = 'red', foreground = 'red')
+# style.configure('eraseBtn.TButton', 
+# font = ("Helvetica", 24, "bold"), background = 'orange', foreground = 'orange')
+
+generatePhoto =ImageTk.PhotoImage(Image.open(makePath(r'\..\Images\Logo\Generate.png')).resize((162,50)))
+clearPhoto = ImageTk.PhotoImage(Image.open(makePath(r'\..\Images\Logo\Clear.png')).resize((125,50)))
+erasePhoto = ImageTk.PhotoImage(Image.open(makePath(r'\..\Images\Logo\Erase.png')).resize((125,50)))
 
 generateBtn = ttk.Button(ButtonsFrame, text = "Generate", 
-command = generateImage, style = 'generateBtn.TButton')
-clearBtn = ttk.Button(ButtonsFrame, text = "Clear",
-command = clear, style = 'clearBtn.TButton')
+command = generateImage
+, image = generatePhoto
+#, style = 'generateBtn.TButton'
+)
+
+clearBtn = ttk.Button(ButtonsFrame, text = "Clear", 
+command = clear
+, image = clearPhoto
+#, style = 'clearBtn.TButton'
+)
 eraseBtn = ttk.Button(ButtonsFrame, text = "Erase",
-command = erase, style = 'eraseBtn.TButton')
+command = erase
+, image = erasePhoto
+#, style = 'eraseBtn.TButton'
+)
 
 generateBtn.grid(row = 0, column = 0, padx = 0)
 clearBtn.grid(row = 0, column = 1, padx = 100)
 eraseBtn.grid(row = 0, column = 2, padx = 0)
 
-#credits
-photo = ImageTk.PhotoImage(Image.open(makePath(r'\..\Images\Logo\TKIG.png')).resize((192, 100)))
-label = ttk.Label(SupportFrame, image = photo)
-label.grid(row = 1, column = 1)
 
+#credits
 chrome_path="C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
 webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
 
 def callback(url):
     webbrowser.get(using = 'chrome').open(url,new = 2)
 
-link = ttk.Label(SupportFrame, text="Buy me tea", foreground ="blue", cursor="hand2")
-link.grid(row = 0, column = 0)
+
+style.configure('support.TLabel', font = ("Helvetica", 16, "bold"))
+link = ttk.Label(SupportFrame, text="Buy me coffee?", foreground ="blue", cursor="hand2", style = 'support.TLabel')
+link.grid(row = 0, column = 1)
 link.bind("<Button-1>", lambda e: callback("paypal.me/chuatecklee"))
 
 CopyrightNotice = ttk.Label(SupportFrame, 
 text="(C)Product of Chua Teck Lee, all rights reserved", foreground="black")
-CopyrightNotice.grid(row = 1, column = 0)
+CopyrightNotice.grid(row = 1, column = 1)
 
 root.mainloop()
 

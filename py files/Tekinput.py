@@ -3,61 +3,24 @@
 
 import tkinter as tk
 from tkinter import *
-#from tkinter import filedialog
-#from tkinter import font as tkFont  # for convenience
 
 from tkinter import ttk
 from tkinter.ttk import *
 
-import PIL
-from PIL import ImageTk,Image
-
-import pathlib
 import copy
 import webbrowser
 
+import Utility
 import Data
 
 #INIT
 
-#set current file directory
-directory = pathlib.Path(__file__).parent.absolute()
-
-def makePath(relative_path) :
-    #try:
-        #base_path = sys._MEIPASS # pylint: disable=no-member
-        #base_path = directory.absolute()
-    #except Exception:
-    #    base_path = os.path.abspath(".")
-
-    #return os.path.join(base_path, relative_path)
-    return r"{}{}".format(directory.absolute(), relative_path)
-
-#Centralizing Window to middle of one Screen
-def centraliseWindow(window):
-    window.update_idletasks()
-
-    # Tkinter way to find the screen resolution
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
-
-    # PyQt way to find the screen resolution
-    #app = QtGui.QApplication([])
-    #screen_width = app.desktop().screenGeometry().width()
-    #screen_height = app.desktop().screenGeometry().height()
-
-    size = tuple(int(_) for _ in window.geometry().split('+')[0].split('x'))
-    x = screen_width/2 - size[0]/2
-    y = screen_height/2 - size[1]/2
-
-    window.geometry("+%d+%d" % (x, y))
-
 #TK GUI
 root = Tk()
-root.title("Tekinput Generator BETA V1.2")
+root.title("Tekinput Generator BETA V2.0")
 root.geometry("1366x768")
-centraliseWindow(root)
-root.iconbitmap(makePath(r'\..\Images\Logo\tkig.ico'))
+Utility.CentraliseWindow(root)
+root.iconbitmap(Utility.MakePath(r'\..\Images\Logo\tkig.ico'))
 
 #ttk style
 style = ttk.Style()
@@ -66,25 +29,13 @@ style = ttk.Style()
 DisplayFrame = ttk.LabelFrame(root, text = "Display")
 DisplayFrame.pack(pady = 10)
 
-InputFrame = ttk.LabelFrame(root, text = "Inputs", padding = 50)
+InputFrame = ttk.LabelFrame(root, text = "Inputs", padding = 10)
 InputFrame.pack(pady = 10)
-
-# MovementLabel = ttk.Label(InputFrame, text = "Movement")
-# MovementLabel.grid()
-
-# AttackLabel = ttk.Label(InputFrame, text = "Attack")
-# AttackLabel.grid()
-
-# StateLabel = ttk.Label(InputFrame, text = "State")
-# StateLabel.grid()
-
-# SpecialLabel = ttk.Label(InputFrame, text = "Special")
-# SpecialLabel.grid()
 
 ButtonsFrame = ttk.Frame(root, padding = 10)
 ButtonsFrame.pack()
 
-SupportFrame = ttk.LabelFrame(root, text = "Credits", padding = 20)
+SupportFrame = ttk.LabelFrame(root, text = "Credits", padding = 10)
 SupportFrame.pack(padx = 5)
 
 ########################VARIABLES###############################
@@ -104,7 +55,7 @@ proper_previews = {}
 
 #Preload all Images Resized.
 for element in Data.Inputs:
-    f_im = Image.open(makePath(element.filepath))
+    f_im = Utility.MakeImage(element.filepath)
     final_Images[element.name] = f_im
     #Here I make a deepcopy, resize my opened image to preview_size and save into preview images
     p_im = copy.deepcopy(f_im)
@@ -133,7 +84,7 @@ def generateImage() :
         totalLength += final_Images[inputBuffer[i].name].size[0]
 
     #creates a new empty image, RGB mode, and size
-    new_im = Image.new('RGBA', (totalLength, final_Images[inputBuffer[0].name].size[1]))
+    new_im = Utility.NewImage('RGBA', totalLength, final_Images[inputBuffer[0].name].size[1])
     
     currentLength = 0
     for i in range(0, len(inputBuffer), 1):
@@ -141,7 +92,7 @@ def generateImage() :
         currentLength += final_Images[inputBuffer[i].name].size[0]
 
     #saves the image onto the selected path
-    new_im.save(makePath(save_path + '\\' + generateFilename() + '.png'))
+    new_im.save(Utility.MakePath(save_path + '\\' + generateFilename() + '.png'))
 
     #display the finished product if bool is true
     if(displayFinalOutput.get()):
@@ -180,14 +131,14 @@ def generatePreview() :
         totalLength += proper_previews[inputBuffer[i].name].size[0]
 
     #creates a new empty image, RGB mode, and size
-    new_im = Image.new('RGBA', (totalLength, preview_size))
+    new_im = Utility.NewImage('RGBA', totalLength, preview_size)
     
     currentLength = 0
     for i in range(0, len(inputBuffer), 1):
         new_im.paste(proper_previews[inputBuffer[i].name], (currentLength, 0))
         currentLength += proper_previews[inputBuffer[i].name].size[0]
     
-    photo = ImageTk.PhotoImage(new_im)
+    photo = Utility.MakeTKImage(new_im)
     comboPreview.configure(image = photo)
     comboPreview.image = photo
 
@@ -214,26 +165,26 @@ def erase():
     generateText()
     generatePreview()
 
-# def updateSelection():
-#    for element in buttons:
-#         if(element.character == None) : 
-#             continue
-#         elif(myCombo.get() == None) : 
-#             element.btn.grid_remove()
-#         elif(element.character != myCombo.get()) : 
-#             element.btn.grid_remove()
-#         else : 
-#             element.btn.grid()
+def updateSelection():
+   for element in buttons:
+        if(element.character == None) : 
+            continue
+        elif(myCombo.get() == None) : 
+            element.btn.grid_remove()
+        elif(element.character != myCombo.get()) : 
+            element.btn.grid_remove()
+        else : 
+            element.btn.grid()
 
-# def updateSelectionCallback(event):
-#     updateSelection()
+def updateSelectionCallback(event):
+    updateSelection()
 
 def scrollCanvas(event):
     comboCanvas.configure(scrollregion=comboCanvas.bbox("all"), width=1000, height=40)
 
 
 #Tekinput Graphic Image Label
-photo = ImageTk.PhotoImage(Image.open(makePath(r'\..\Images\Logo\TKIG.png')).resize((160, 90)))
+photo = Utility.MakeTKImage(r'\..\Images\Logo\TKIG.png',160,90)
 label = ttk.Label(DisplayFrame, image = photo)
 label.grid(row = 0, column = 0)
 
@@ -276,7 +227,7 @@ style.configure('InputButton.TButton', background = 'black', borderwidth = 10)
 class inputButton():
     def __init__ (self, root, element):
         #PHOTO OUTPUT
-        self.photo = ImageTk.PhotoImage(preview_Images[element.name])
+        self.photo = Utility.MakeTKImageWithImage(preview_Images[element.name])
         #BUTTON CREATION
         self.btn = ttk.Button(root, text = element.name, image = self.photo
         , command = lambda : addInput(element), style = 'InputButton.TButton'
@@ -295,48 +246,38 @@ for element in Data.Inputs:
 
 
 #Character Selection widgets and functions
-# charSelectLabel = ttk.Label(InputFrame, text = "Choose your character").grid(row = 0, column = 20)
+charSelectLabel = ttk.Label(InputFrame, text = "Choose your character").grid(row = 0, column = 20)
 
-# myCombo = ttk.Combobox(InputFrame, value = Data.characters)
-#updateSelection()
-# myCombo.bind("<<ComboboxSelected>>", updateSelectionCallback)
-# myCombo.grid(row = 1, column = 20)
+myCombo = ttk.Combobox(InputFrame, value = Data.characters)
+updateSelection()
+myCombo.bind("<<ComboboxSelected>>", updateSelectionCallback)
+myCombo.grid(row = 1, column = 20)
 
-###TEMP CODE###
-for element in buttons:
-        if(element.character == None) : 
-            continue
+# ###TEMP CODE###
+# for element in buttons:
+#         if(element.character == None) : 
+#             continue
         
-        element.btn.grid_remove()
-###TEMP CODE###
+#         element.btn.grid_remove()
+# ###TEMP CODE###
 
 #GENERATE, CLEAR, ERASE Buttons
-# style.configure('generateBtn.TButton', 
-# font = ("Helvetica", 24, "bold"), background = 'green', foreground = 'green')
-# style.configure('clearBtn.TButton', 
-# font = ("Helvetica", 24, "bold"), background = 'red', foreground = 'red')
-# style.configure('eraseBtn.TButton', 
-# font = ("Helvetica", 24, "bold"), background = 'orange', foreground = 'orange')
-
-generatePhoto =ImageTk.PhotoImage(Image.open(makePath(r'\..\Images\Logo\Generate.png')).resize((162,50)))
-clearPhoto = ImageTk.PhotoImage(Image.open(makePath(r'\..\Images\Logo\Clear.png')).resize((125,50)))
-erasePhoto = ImageTk.PhotoImage(Image.open(makePath(r'\..\Images\Logo\Erase.png')).resize((125,50)))
+generatePhoto = Utility.MakeTKImage(r'\..\Images\Logo\Generate.png',162,50)
+clearPhoto = Utility.MakeTKImage(r'\..\Images\Logo\Clear.png',125,50)
+erasePhoto = Utility.MakeTKImage(r'\..\Images\Logo\Erase.png',125,50)
 
 generateBtn = ttk.Button(ButtonsFrame, text = "Generate", 
 command = generateImage
 , image = generatePhoto
-#, style = 'generateBtn.TButton'
 )
 
 clearBtn = ttk.Button(ButtonsFrame, text = "Clear", 
 command = clear
 , image = clearPhoto
-#, style = 'clearBtn.TButton'
 )
 eraseBtn = ttk.Button(ButtonsFrame, text = "Erase",
 command = erase
 , image = erasePhoto
-#, style = 'eraseBtn.TButton'
 )
 
 generateBtn.grid(row = 0, column = 0, padx = 0)

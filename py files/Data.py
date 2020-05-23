@@ -4,9 +4,10 @@
 #USING SQLITE3 DATABASE TO STORE and READ info
 #USING DB FOR SQLITE DATABASE TO EDIT/READ
 
-
 import sqlite3
 from sqlite3 import Error
+
+import Utility
 
 class Input():
     def __init__(self, name, filepath, display, fileDisplay, buttonLayout, character):
@@ -30,7 +31,7 @@ def create_connection(db_file):
 #data
 Inputs = []
 
-conn = create_connection(r"C:\Dev\Python\Projects\Tekinput\TekinputGenerator\database.db")
+conn = create_connection(Utility.MakePath(r'\..\database.db'))
 cur = conn.cursor()
 cur.execute("SELECT * FROM Inputs")
 

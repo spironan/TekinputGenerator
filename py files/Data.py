@@ -10,13 +10,13 @@ from sqlite3 import Error
 import Utility
 
 class Input():
-    def __init__(self, name, filepath, display, fileDisplay, buttonLayout, character):
+    def __init__(self, name, filepath, display, fileDisplay, buttonLayout, characterList):
         self.name = name
         self.filepath = filepath
         self.display = display
         self.fileDisplay = fileDisplay
         self.buttonLayout = buttonLayout
-        self.character = character
+        self.characterList = characterList
 
 def create_connection(db_file):
     """ create a database connection to a SQLite database """
@@ -38,7 +38,10 @@ cur.execute("SELECT * FROM Inputs")
 rows = cur.fetchall()
 
 for row in rows:
-    Inputs.append( Input(row[0], row[1], row[2], row[3], tuple(eval(row[4])), row[5] ))
+    if(row[5] != None) :
+        Inputs.append( Input(row[0], row[1], row[2], row[3], tuple(eval(row[4])), row[5].split(',') ))
+    else:
+        Inputs.append( Input(row[0], row[1], row[2], row[3], tuple(eval(row[4])), row[5] ))
 
 
 

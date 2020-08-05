@@ -13,20 +13,24 @@ import webbrowser
 import Utility
 import Data
 
+
 #INIT
 
 #TK GUI
 root = Tk()
-root.title("Tekinput Generator BETA V2.0")
-root.geometry("1366x768")
+root.title("Tekinput Generator")
+root.geometry("1536x864")
+#root.geometry("1280x720")
 Utility.CentraliseWindow(root)
 root.iconbitmap(Utility.MakePath(r'\..\Images\Logo\tkig.ico'))
+
 
 #ttk style
 style = ttk.Style()
 
+
 #Various GUI Frames
-DisplayFrame = ttk.LabelFrame(root, text = "Display")
+DisplayFrame = ttk.Frame(root)
 DisplayFrame.pack(pady = 10)
 
 InputFrame = ttk.LabelFrame(root, text = "Inputs", padding = 10)
@@ -35,8 +39,10 @@ InputFrame.pack(pady = 10)
 ButtonsFrame = ttk.Frame(root, padding = 10)
 ButtonsFrame.pack()
 
-SupportFrame = ttk.LabelFrame(root, text = "Credits", padding = 10)
-SupportFrame.pack(padx = 5)
+#SupportFrame = ttk.LabelFrame(root, text = "Credits", padding = 10)
+#SupportFrame.pack(pady = 5)
+SupportFrame = ttk.LabelFrame(root, text = "Credits", padding = 20)
+SupportFrame.pack(pady = 20)
 
 ########################VARIABLES###############################
 
@@ -138,7 +144,7 @@ def generatePreview() :
         new_im.paste(proper_previews[inputBuffer[i].name], (currentLength, 0))
         currentLength += proper_previews[inputBuffer[i].name].size[0]
     
-    photo = Utility.MakeTKImage(new_im)
+    photo = Utility.MakeTKImageWithImage(new_im)
     comboPreview.configure(image = photo)
     comboPreview.image = photo
 
@@ -167,11 +173,13 @@ def erase():
 
 def updateSelection():
    for element in buttons:
-        if(element.character == None) : 
+        if(element.characterList == None) : 
             continue
         elif(myCombo.get() == None) : 
+            s = myCombo.get()
             element.btn.grid_remove()
-        elif(element.character != myCombo.get()) : 
+        elif(myCombo.get() not in element.characterList) : 
+            s = myCombo.get()
             element.btn.grid_remove()
         else : 
             element.btn.grid()
@@ -189,7 +197,7 @@ label = ttk.Label(DisplayFrame, image = photo)
 label.grid(row = 0, column = 0)
 
 
-comboPreviewFrame = Labelframe(DisplayFrame, text = "Combo Preivew Frame", width = 1000, height = 40)
+comboPreviewFrame = Labelframe(DisplayFrame, text = "Combo Preivew", width = 1000, height = 40)
 comboPreviewFrame.grid(row = 0, column = 1)
 comboPreviewFrame.grid_propagate(0)
 
@@ -239,7 +247,7 @@ class inputButton():
             padx = 3,
             pady = 10)
 
-        self.character = element.character
+        self.characterList = element.characterList
         
 for element in Data.Inputs:
     buttons.append(inputButton(InputFrame, element))
@@ -253,13 +261,13 @@ updateSelection()
 myCombo.bind("<<ComboboxSelected>>", updateSelectionCallback)
 myCombo.grid(row = 1, column = 20)
 
-# ###TEMP CODE###
-# for element in buttons:
-#         if(element.character == None) : 
-#             continue
+###TEMP CODE###
+for element in buttons:
+        if(element.characterList == None) : 
+            continue
         
-#         element.btn.grid_remove()
-# ###TEMP CODE###
+        element.btn.grid_remove()
+###TEMP CODE###
 
 #GENERATE, CLEAR, ERASE Buttons
 generatePhoto = Utility.MakeTKImage(r'\..\Images\Logo\Generate.png',162,50)
@@ -284,7 +292,6 @@ generateBtn.grid(row = 0, column = 0, padx = 0)
 clearBtn.grid(row = 0, column = 1, padx = 100)
 eraseBtn.grid(row = 0, column = 2, padx = 0)
 
-
 #credits
 chrome_path="C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
 webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
@@ -298,9 +305,20 @@ link = ttk.Label(SupportFrame, text="Buy me coffee?", foreground ="blue", cursor
 link.grid(row = 0, column = 1)
 link.bind("<Button-1>", lambda e: callback("paypal.me/chuatecklee"))
 
+
+Version = ttk.Label(SupportFrame, 
+text="Tekinput Generator Release V1.0", foreground="black")
+Version.grid(row = 1, column = 1)
+
+shoutout = ttk.Label(SupportFrame, 
+text="Graphics & Images provided by Duke_KC ", foreground="black", cursor="hand2")
+shoutout.grid(row = 2, column = 1)
+shoutout.bind("<Button-1>", lambda e: callback("https://twitter.com/DukeKC_"))
+
 CopyrightNotice = ttk.Label(SupportFrame, 
-text="(C)Product of Chua Teck Lee, all rights reserved", foreground="black")
-CopyrightNotice.grid(row = 1, column = 1)
+text="(C)Product of Chua Teck Lee, all rights reserved", foreground="black", cursor="hand2")
+CopyrightNotice.grid(row = 3, column = 1)
+CopyrightNotice.bind("<Button-1>", lambda e: callback("https://twitter.com/chuatecklee"))
 
 root.mainloop()
 

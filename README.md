@@ -1,30 +1,32 @@
 # TekinputGenerator
-Tekken Input Generator for content creators
+Tekken Input Generator for content creators. 
+Easily stitch up combos that you can use in your videos in high quality!
+Editable to use your own images as well. More information of how to use the program below!
 
-FILE DIRECTORIES:
+<h3>FILE DIRECTORIES</h3>
 
 	The relevant files can be found in the specific directories
 	Executable file : Tekinput->Tekinput.exe
 	Images file : Images
 
 
-HOW TO USE
+<h2>HOW TO USE</h2>
 
 	Launch the Executable file, press on the relevant combos you want to 
-make and click GENERATE. If you make a mistake, ERASE will remove the last 
-note while CLEAR will remove everything.
+	make and click GENERATE. If you make a mistake, ERASE will remove the last 
+	note while CLEAR will remove everything.
 
 	The images can be found in Tekinput->Images->Output and for your 
-own use. If you want to use your own Images for Input/Output 
-you can access and replace with your Images at Tekinput->Images->Inputs.
+	own use. If you want to use your own Images for Input/Output 
+	you can access and replace with your Images at Tekinput->Images->Inputs.
 
-Take note this images by abide by these rules:
+<h3>Take note the images you use must abide by these rules</h3>
 
 	(1)They must all have the same dimensions e.g. 500x500, 1000x2000, 2048x1024
 	(2)They must all be type '.png'(Improvement on this may depend on use case)
 	(3)They must all be named the same as the one's its replacing
 
-MoveList: 
+<h3>MoveList</h3>
 
 	MOVE NAME      :      FILENAME	
 	   1 		         1
@@ -81,29 +83,29 @@ MoveList:
 	   )		         out
 	   ~		         tilde
 
-Common Problems & Solutions
+<h3>Common Problems & Solutions</h3>
 
 	(Q) I can't seem to generate a file
 	(A) Go to Images, check if there is an empty folder called Output,
 	if there isn't create one and try again
 
 
-<h1>WARNING</h1>
+<h3>WARNING</h3>
   
   Do not move any of the files as it may cause the program to malfunction
 
 
-CURRENT VERSION UPDATES:
+<h2>CURRENT VERSION UPDATES</h2>
 
 	(1) Mordernized UI
 	(2) Visual Update 
 	(3) Added More Buttons Functionality
 	(4) Scrollabel View for long combos
 
-*Use of images length and width can be different as long as they are consistent
-examples that are allowed : 1000x1000, 2048x4096, 500x500
+	*Use of images length and width can be different as long as they are consistent
+	examples that are allowed : 1000x1000, 2048x4096, 500x500
 
-CREDITS: 
+<h2>CREDITS</h2>
 
 	Programmed and Designed by Chua Teck Lee, Spironan
 	Overall Graphics and Art Designed by Keith Chua, Duke_KC
